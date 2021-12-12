@@ -65,7 +65,7 @@ public class CategoryPanel extends JPanel {
 		}
 		try {
 			while (resultSet.next()) {
-				textArea.append(resultSet.getString(1));
+				textArea.append(resultSet.getString(1) + "\n");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

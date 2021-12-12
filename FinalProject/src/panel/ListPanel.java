@@ -15,7 +15,7 @@ public class ListPanel extends JPanel {
 	public static ListPanel instance = new ListPanel();
 
 	JScrollPane scrollPane;
-	JTextArea textArea = new JTextArea(22, 45);
+	JTextArea textArea = new JTextArea(22, 40);
 
 	public ListPanel() {
 		textArea.setEditable(false);
