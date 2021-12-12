@@ -14,10 +14,10 @@ public class RecordPanel extends JPanel{
 	
 	public static RecordPanel instance = new RecordPanel();
 	
-	JLabel spend = new JLabel("花费");
-	JLabel category = new JLabel("分类");
-	JLabel comment = new JLabel("备注");
-	JLabel date = new JLabel("日期");
+	JLabel spend = new JLabel("Spending");
+	JLabel category = new JLabel("Item Category");
+	JLabel comment = new JLabel("Description");
+	JLabel date = new JLabel("Date");
 	
 	public JTextField spendText = new JTextField("0");
 	public JComboBox categoryCb = new JComboBox<>();
@@ -27,7 +27,7 @@ public class RecordPanel extends JPanel{
 	
 	public JTextField tfSpend = new JTextField("0");
 	
-	JButton submitBtn = new JButton("记一笔");
+	JButton submitBtn = new JButton("OK!!!");
 	
 	public RecordPanel() {
 		
@@ -61,7 +61,6 @@ public class RecordPanel extends JPanel{
 				e1.printStackTrace();
 				System.exit(0);
 			}
-			System.out.println("Database connected");
 			// Create a statement
 			Statement statement = null;
 			try {
@@ -70,13 +69,13 @@ public class RecordPanel extends JPanel{
 				e1.printStackTrace();
 				System.exit(0);
 			}
-			
-			try {
-				statement.executeUpdate("insert into Record values(null, "+ spendText.getText() + );
-				JOptionPane.showMessageDialog(null,  "Inserted Successfully");
-			} catch (SQLException e1) {
-				
-			} 
+//			
+//			try {
+//				statement.executeUpdate("insert into Record values(null, "+ spendText.getText() + );
+//				JOptionPane.showMessageDialog(null,  "Inserted Successfully");
+//			} catch (SQLException e1) {
+//				
+//			} 
 		});
 	}
  

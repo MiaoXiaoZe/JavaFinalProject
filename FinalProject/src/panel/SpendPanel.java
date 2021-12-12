@@ -20,11 +20,11 @@ import javax.swing.JPanel;
 public class SpendPanel extends JPanel {
 	public static SpendPanel instance = new SpendPanel();
 
-	public JLabel monthlyBudget1 = new JLabel("预算");
-	public JLabel monthSpend1 = new JLabel("本月消费");
-	public JLabel MonthLeft1 = new JLabel("本月剩余");
-	public JLabel monthLeftDay1 = new JLabel("距离月末");
-	public JLabel todaySpend1 = new JLabel("今日消费");
+	public JLabel monthlyBudget1 = new JLabel("Budget");
+	public JLabel monthSpend1 = new JLabel("This month's spending");
+	public JLabel MonthLeft1 = new JLabel("Amount left");
+	public JLabel monthLeftDay1 = new JLabel("Days until next month");
+	public JLabel todaySpend1 = new JLabel("Today's spending");
 
 	public JLabel monthlyBudget2 = new JLabel("$10000");
 	public JLabel monthSpend2 = new JLabel("$2300");
@@ -41,6 +41,7 @@ public class SpendPanel extends JPanel {
 	String startDate;
 	String endDate;
 	String todayDate;
+	String thismonth;
 
 	private SpendPanel() {
 		getdata();
@@ -60,7 +61,6 @@ public class SpendPanel extends JPanel {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Database connected");
 		// Create a statement
 		Statement statement = null;
 		try {
@@ -75,6 +75,12 @@ public class SpendPanel extends JPanel {
 		try {
 			dateResultSet = statement.executeQuery("select date('now')");
 			todayDate = dateResultSet.getString(1);
+			
+			dateResultSet = statement.executeQuery("select strftime('%m', 'now')");
+			thismonth = dateResultSet.getString(1);
+			dateResultSet = statement.executeQuery("select * from budget where month = " + thismonth);
+			budget = dateResultSet.getInt(1);
+			
 			dateResultSet = statement.executeQuery("select date('now', 'start of month')");
 			startDate = dateResultSet.getString(1);
 			dateResultSet = statement.executeQuery("select date('now', 'start of month', '+1 month', '-1 day')");
@@ -149,6 +155,9 @@ public class SpendPanel extends JPanel {
 
 		centerPanel.add(monthlyBudget1);
 		centerPanel.add(monthlyBudget2);
+		
+		centerPanel.add(todaySpend1);
+		centerPanel.add(todaySpend2);
 
 		centerPanel.add(monthSpend1);
 		centerPanel.add(monthSpend2);
@@ -159,8 +168,6 @@ public class SpendPanel extends JPanel {
 		centerPanel.add(monthLeftDay1);
 		centerPanel.add(monthLeftDay2);
 
-		centerPanel.add(todaySpend1);
-		centerPanel.add(todaySpend2);
 
 		return centerPanel;
 

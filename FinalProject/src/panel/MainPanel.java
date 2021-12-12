@@ -19,10 +19,10 @@ public class MainPanel extends JPanel {
 
 	public MainPanel() {
 		spendBtn = new JButton("Spend summary");
-		recordBtn = new JButton("Record");
+		recordBtn = new JButton("Add item");
 		categoryBtn = new JButton("Category");
 		budgetBtn = new JButton("Budget");
-		ListBtn = new JButton("List");
+		ListBtn = new JButton("Record");
 
 
 
