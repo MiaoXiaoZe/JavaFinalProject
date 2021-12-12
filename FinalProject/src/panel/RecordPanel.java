@@ -1,6 +1,12 @@
 package panel;
 
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
 
 import javax.swing.*;
 
@@ -14,9 +20,9 @@ public class RecordPanel extends JPanel{
 	JLabel date = new JLabel("日期");
 	
 	public JTextField spendText = new JTextField("0");
-	public JComboBox<String> categoryCb = new JComboBox<>();
+	public JComboBox categoryCb = new JComboBox<>();
 	public JTextField commentText = new JTextField();
-//	public DatePicker datepick = new JXDatePicker(new Date());
+	public JTextField dateText = new JTextField();
 	
 	
 	public JTextField tfSpend = new JTextField("0");
@@ -29,11 +35,13 @@ public class RecordPanel extends JPanel{
 		JPanel northPanel = new JPanel(new GridLayout(4, 2, 40, 40));
 		northPanel.add(spend);
 		northPanel.add(spendText);
+		
 		northPanel.add(category);
 		northPanel.add(categoryCb);
 		
 		northPanel.add(comment);
 		northPanel.add(commentText);
+		
 		northPanel.add(date);
 //		northPanel.add(datepick);
 		
@@ -43,7 +51,34 @@ public class RecordPanel extends JPanel{
 		this.setLayout(new BorderLayout());
 		this.add(northPanel, BorderLayout.NORTH);
 		this.add(submitPanel, BorderLayout.CENTER);
+		submitBtn.addActionListener((e) -> {
+			// Connect to a database
+			Connection connection = null;
+			try {
+				connection = DriverManager.getConnection("jdbc:sqlite:javabook.db");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				System.exit(0);
+			}
+			System.out.println("Database connected");
+			// Create a statement
+			Statement statement = null;
+			try {
+				statement = connection.createStatement();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+				System.exit(0);
+			}
+			
+			try {
+				statement.executeUpdate("insert into Record values(null, "+ spendText.getText() + );
+				JOptionPane.showMessageDialog(null,  "Inserted Successfully");
+			} catch (SQLException e1) {
+				
+			} 
+		});
 	}
-
+ 
 
 }
