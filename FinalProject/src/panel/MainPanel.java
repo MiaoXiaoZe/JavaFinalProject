@@ -1,7 +1,12 @@
 package panel;
 
 import java.awt.*;
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+
+import util.CenterPanel;
 
 
 public class MainPanel extends JPanel {
@@ -15,7 +20,7 @@ public class MainPanel extends JPanel {
 	public JButton budgetBtn = new JButton();
 	public JButton ListBtn = new JButton();
 
-	private JComponent c;
+	public CenterPanel workingPanel;
 
 	public MainPanel() {
 		spendBtn = new JButton("Spend summary");
@@ -32,38 +37,30 @@ public class MainPanel extends JPanel {
 		tb.add(categoryBtn);
 		tb.add(budgetBtn);
 		tb.add(ListBtn);
+		tb.setFloatable(false);
+		
+		workingPanel = new CenterPanel(0.8);
 		setLayout(new BorderLayout());
 		add(tb, BorderLayout.NORTH);
+		add(workingPanel, BorderLayout.CENTER);
 	}
 
 	private void addListener() {
 		spendBtn.addActionListener((e) -> {
-			show(SpendPanel.instance);
+			workingPanel.show(SpendPanel.instance);
 		});
 		recordBtn.addActionListener((e) -> {
-			show(RecordPanel.instance);
+			workingPanel.show(RecordPanel.instance);
 		});
 		categoryBtn.addActionListener((e) -> {
-			show(CategoryPanel.instance);
+			workingPanel.show(CategoryPanel.instance);
 		});
 		budgetBtn.addActionListener((e) -> {
-			show(BudgetPanel.instance);
+			workingPanel.show(BudgetPanel.instance);
 		});
 		ListBtn.addActionListener((e) ->{
-			show(ListPanel.instance);
+			workingPanel.show(ListPanel.instance);
 		});
-	}
-
-	public void show(JComponent p) {
-		this.c = p;
-		Component[] cs = getComponents();
-		for (Component c : cs) {
-			remove(c);
-		}
-		p.revalidate();
-		add(tb, BorderLayout.NORTH);
-		add(p, BorderLayout.CENTER);
-		this.updateUI();
 	}
 
 }

@@ -1,11 +1,10 @@
 package panel;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
+
 import java.awt.GridLayout;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -14,8 +13,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import util.Check;
 
-public class BudgetPanel extends JPanel {
+public class BudgetPanel extends WorkingPanel {
 	public static BudgetPanel instance = new BudgetPanel();
 
 	JLabel budget = new JLabel("Budget: ");
@@ -23,7 +23,7 @@ public class BudgetPanel extends JPanel {
 	JTextField budgetField = new JTextField();
 	JTextField monthField = new JTextField();
 
-	JButton addBtn = new JButton("Add Budget");
+	JButton addBtn = new JButton("Set Budget");
 
 	public BudgetPanel() {
 		JPanel centerPanel = new JPanel(new GridLayout(2, 2));
@@ -39,45 +39,53 @@ public class BudgetPanel extends JPanel {
 		addListener();
 	}
 
-	private void addListener() {
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void addListener() {
 		addBtn.addActionListener((e) -> {
-			if(Integer.parseInt(monthField.getText()) < 1 || Integer.parseInt(monthField.getText()) > 12)
-				JOptionPane.showMessageDialog(null,  "Please input month from 1 to 12");
+			if (!Check.checkPositive(budgetField, "Budget")) 
+				return;
+			else if(!Check.checkMonth(monthField, "Month"))
+				return;
 			// Connect to a database
-			Connection connection = null;
-			try {
-				connection = DriverManager.getConnection("jdbc:sqlite:javabook.db");
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				System.exit(0);
-			}
-			// Create a statement
-			Statement statement = null;
-			try {
-				statement = connection.createStatement();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-				System.exit(0);
-			}
+			else {
+				Connection connection = null;
+				try {
+					connection = DriverManager.getConnection("jdbc:sqlite:javabook.db");
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					System.exit(0);
+				}
+				// Create a statement
+				Statement statement = null;
+				try {
+					statement = connection.createStatement();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					System.exit(0);
+				}
 
-			try {
-				statement.executeUpdate(
-						"update budget set num = " + budgetField.getText() + " where month = " + monthField.getText());
-				JOptionPane.showMessageDialog(null,  "Inserted Successfully");
+				try {
+					statement.executeUpdate("update budget set num = " + budgetField.getText() + " where month = "
+							+ monthField.getText());
+					JOptionPane.showMessageDialog(null, "Inserted Successfully");
 
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				System.exit(0);
-			}
-			// Close the connection
-			try {
-				connection.close();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				System.exit(0);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					System.exit(0);
+				}
+				// Close the connection
+				try {
+					connection.close();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					System.exit(0);
+				}
 			}
 		});
 

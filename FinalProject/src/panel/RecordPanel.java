@@ -1,18 +1,18 @@
 package panel;
 
 import java.awt.*;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import javax.swing.*;
+import util.Check;
 
-public class RecordPanel extends JPanel {
+public class RecordPanel extends WorkingPanel {
 
 	public static RecordPanel instance = new RecordPanel();
 
@@ -37,7 +37,6 @@ public class RecordPanel extends JPanel {
 		northPanel.add(spendText);
 
 		northPanel.add(category);
-		updateComboBox();
 		northPanel.add(categoryCb);
 
 		northPanel.add(comment);
@@ -55,12 +54,17 @@ public class RecordPanel extends JPanel {
 		this.add(submitPanel, BorderLayout.CENTER);
 	}
 
-	private void updateComboBox() {
+	public String getSelectedCategory() {
+		return (String) categoryCb.getSelectedItem();
+	}
+
+	@Override
+	public void updateData() {
+		categoryCb.removeAllItems();
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection("jdbc:sqlite:javabook.db");
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			System.exit(0);
 		}
@@ -84,34 +88,18 @@ public class RecordPanel extends JPanel {
 		} catch (SQLException e2) {
 			e2.printStackTrace();
 		}
-
 	}
 
-	public String getSelectedCategory() {
-		return (String) categoryCb.getSelectedItem();
-	}
-
-	public static boolean isValid(String text) {
-		if (text == null || !text.matches("\\d{4}-[01]\\d-[0-3]\\d"))
-			return false;
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		df.setLenient(false);
-		try {
-			df.parse(text);
-			return true;
-		} catch (ParseException ex) {
-			return false;
-		}
-	}
-
-	private void addListener() {
+	@Override
+	public void addListener() {
 		submitBtn.addActionListener((e) -> {
+			if (!Check.checkPositive(spendText, "Amount"))
+				return;
 			// Connect to a database
 			Connection connection = null;
 			try {
 				connection = DriverManager.getConnection("jdbc:sqlite:javabook.db");
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				System.exit(0);
 			}
@@ -123,11 +111,9 @@ public class RecordPanel extends JPanel {
 			String categoryS = this.getSelectedCategory();
 			String query = "insert into Record values(null,?,?,?,?)";
 
-			if (spend <= 0) {
-				JOptionPane.showMessageDialog(null, "Amount can't be less than or equal to 0");
-			}
-
-			else if (!isValid(dateS))
+			if (!Check.checkEmpty(dateText, "Date"))
+				return;
+			else if (!Check.isValid(dateS))
 				JOptionPane.showMessageDialog(null, "Date must be in format");
 			else {
 				try {
@@ -146,11 +132,14 @@ public class RecordPanel extends JPanel {
 				try {
 					connection.close();
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					System.exit(0);
 				}
 			}
+			spendText.setText("0");
+			commentText.setText("");
+			dateText.setText("");
 		});
+
 	}
 }

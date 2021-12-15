@@ -1,37 +1,38 @@
 package panel;
 
-import java.awt.BorderLayout;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class ListPanel extends JPanel {
+public class ListPanel extends WorkingPanel {
 	public static ListPanel instance = new ListPanel();
 
 	JScrollPane scrollPane;
-	JTextArea textArea = new JTextArea(22, 40);
+	JTextArea textArea = new JTextArea(15, 30);
 
 	public ListPanel() {
 		textArea.setEditable(false);
 		scrollPane = new JScrollPane(textArea);
 		add(scrollPane);
 
+	}
+
+	@Override
+	public void updateData() {
+		textArea.setText("");
 		// Connect to a database
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection("jdbc:sqlite:javabook.db");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Database connected");
 		// Create a statement
 		Statement statement = null;
 		try {
@@ -42,9 +43,8 @@ public class ListPanel extends JPanel {
 		}
 		ResultSet resultSet = null;
 		try {
-			resultSet = statement.executeQuery("select * from Record");
+			resultSet = statement.executeQuery("select * from Record order by date asc");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -62,10 +62,15 @@ public class ListPanel extends JPanel {
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(0);
-		}
+		}		
+	}
+
+	@Override
+	public void addListener() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

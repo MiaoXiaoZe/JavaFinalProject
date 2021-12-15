@@ -9,7 +9,10 @@ import java.sql.Statement;
 
 import javax.swing.*;
 
-public class CategoryPanel extends JPanel {
+import util.Check;
+
+public class CategoryPanel extends WorkingPanel {
+
 	public static CategoryPanel instance = new CategoryPanel();
 
 	public JTextField textField = new JTextField(15);
@@ -17,35 +20,32 @@ public class CategoryPanel extends JPanel {
 	public JButton deleteBtn = new JButton("Delete");
 
 	JScrollPane scrollPane;
-	JTextArea textArea = new JTextArea(15, 45);
+	JTextArea textArea = new JTextArea(10, 30);
 
 	public CategoryPanel() {
 		scrollPane = new JScrollPane(textArea);
-		JPanel northPanel = new JPanel();
-		northPanel.add(new JLabel("Category"));
 
 		JPanel southPanel = new JPanel();
 		southPanel.add(textField);
 		southPanel.add(addBtn);
 		southPanel.add(deleteBtn);
-		
-		setText();
+
 		textArea.setEditable(false);
 		scrollPane = new JScrollPane(textArea);
-		this.add(northPanel, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
 		this.add(southPanel, BorderLayout.SOUTH);
 
 		addListener();
 	}
 
-	private void setText() {
+	@Override
+	public void updateData() {
+		textArea.setText("");
 		// Connect to a database
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection("jdbc:sqlite:javabook.db");
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			System.exit(0);
 		}
@@ -75,21 +75,22 @@ public class CategoryPanel extends JPanel {
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(0);
 		}
+		textField.setText("");
 	}
 
-	private void addListener() {
+	@Override
+	public void addListener() {
 		addBtn.addActionListener((e) -> {
-			String category = textField.getText();
+			if (!Check.checkEmpty(textField, "Category"))
+			    return;
 			// Connect to a database
 			Connection connection = null;
 			try {
 				connection = DriverManager.getConnection("jdbc:sqlite:javabook.db");
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				System.exit(0);
 			}
@@ -114,20 +115,19 @@ public class CategoryPanel extends JPanel {
 			try {
 				connection.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				System.exit(0);
 			}
-
+			updateData();
 		});
 		deleteBtn.addActionListener((e) -> {
-			String category = textField.getText();
+			if (!Check.checkEmpty(textField, "Category"))
+			    return;
 			// Connect to a database
 			Connection connection = null;
 			try {
 				connection = DriverManager.getConnection("jdbc:sqlite:javabook.db");
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				System.exit(0);
 			}
@@ -139,12 +139,10 @@ public class CategoryPanel extends JPanel {
 				e1.printStackTrace();
 				System.exit(0);
 			}
-			ResultSet resultSet = null;
 			try {
 				statement.executeUpdate("delete from Category where name = '" + textField.getText() + "'");
 				JOptionPane.showMessageDialog(null, "Deleted Successfully");
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				System.exit(0);
 			}
@@ -152,10 +150,10 @@ public class CategoryPanel extends JPanel {
 			try {
 				connection.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				System.exit(0);
 			}
+			updateData();
 		});
 	}
 
